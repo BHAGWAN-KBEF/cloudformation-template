@@ -6,8 +6,20 @@ phases:
       python: 3.11
   build:
     commands:
-      - echo "Validating CloudFormation template"
+      - echo "🔍 Validating CloudFormation template..."
       - aws cloudformation validate-template --template-body file://template.yaml
+
+      - echo "🚀 Running Cloud One – Conformity Template Scanner..."
+      - |
+        curl -X POST https://api.conformity.trendmicro.com/template-scanner/scan \
+        -H "Content-Type: application/json" \
+        -H "Authorization: ApiKey YOUR_API_KEY" \
+        --data-binary @template.yaml \
+        -o scan-results.json
+
+      - echo "📄 Scanner results written to scan-results.json"
+
 artifacts:
   files:
     - template.yaml
+    - scan-results.json
